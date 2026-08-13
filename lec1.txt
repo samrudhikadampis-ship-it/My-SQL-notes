@@ -1,0 +1,146 @@
+Constraints are the rules on data values 
+TYpes:
+1)Primary Key: Uniquely identifies enitites form set
+2)unique
+3)Not NULL : Means value is required
+4)NULL : values may be mising
+5)Check
+6)Default : Default value taken if user has not given any value
+7) Fallen Key: primary key in someones others table is fallen key
+
+
+
+mysql> insert int student values(101,'Sam');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'int student values(101,'Sam')' at line 1
+mysql> insert into student values(101,'Sam');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select *from student;
++------------+------+
+| employeeNo | name |
++------------+------+
+|        101 | Sam  |
++------------+------+
+1 row in set (0.00 sec)
+
+mysql> insert into student values(101,'Suresh');
+ERROR 1062 (23000): Duplicate entry '101' for key 'student.PRIMARY'
+mysql> insert into student values(102,'Ramesh');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student name values('sam');
+
+
+<-------Primary Key---------->
+mysql> CREATE TABLE student (
+    ->     employeeNo INT PRIMARY KEY,
+    ->     phoneNo VARCHAR(15) NOT NULL,
+    ->     email VARCHAR(100) NULL
+    -> );
+
+mysql> insert into student values(101,'Sam');
+mysql> select *from student;
+
+<---------Check--------->
+
+mysql> CREATE TABLE student (
+    ->     employeeNo INT PRIMARY KEY,
+    ->     class CHAR(10) CHECK (class IN ('A', 'B'))
+    -> );
+
+mysql> insert into student values (101,'a');
+
+mysql> select * from student;
+
+//Error when i tried putting c this is because we only used 'a' and 'b' cuz it checks only values inside bracet
+mysql> insert into student values (102,'c');
+ERROR 3819 (HY000): Check constraint 'student_chk_1' is violated. 
+
+<--- Foriegn Key---->
+
+==> Parent Child Relation
+
+mysql> create table employee(employeeId int primary key, ename char(10),sid int , foreign key (sid)references student(sid));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> select * from student;
+Empty set (0.00 sec)
+
+mysql> insert into student values (101,'Ramesh');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student;
++-----+--------+
+| sid | sname  |
++-----+--------+
+| 101 | Ramesh |
++-----+--------+
+1 row in set (0.00 sec)
+
+mysql> insert into employee values (100,'suresh');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into employee values (100,'suresh',101);
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> select * from student;
++-----+--------+
+| sid | sname  |
++-----+--------+
+| 101 | Ramesh |
++-----+--------+
+1 row in set (0.00 sec)
+
+mysql> select * from employee;
++------------+--------+------+
+| employeeId | ename  | sid  |
++------------+--------+------+
+|        100 | suresh |  101 |
++------------+--------+------+
+1 row in set (0.00 sec)
+
+//ERROR ==> 
+mysql> insert into employee values (102,'ganesh',102);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`student`.`employee`, CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`sid`) REFERENCES `student` (`sid`))
+
+//Delete Command
+
+mysql> delete from student where sid=101;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`student`.`employee`, CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`sid`) REFERENCES `student` (`sid`))
+mysql> delete from employee where sid=101;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from employee;
+Empty set (0.00 sec)
+
+mysql> delete from student where sid=101;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> delete from employee where sid=101;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from employee;
+Empty set (0.00 sec)
+
+mysql> update student set name='Krishna' where sid=102;
+ERROR 1054 (42S22): Unknown column 'name' in 'field list'
+mysql> update student set sname='Krishna' where sid=102;
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+mysql> update student set sname='radha';
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> select * from student;
++-----+-------+
+| sid | sname |
++-----+-------+
+| 107 | radha |
+| 108 | radha |
+| 109 | radha |
+| 110 | radha |
+| 111 | radha |
++-----+-------+
+5 rows in set (0.00 sec)
+
