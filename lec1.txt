@@ -8,7 +8,21 @@ TYpes:
 6)Default : Default value taken if user has not given any value
 7) Fallen Key: primary key in someones others table is fallen key
 
+<----Starting---->
 
+C:\Users\HP>mysql -u root -p
+Enter password: ********
+
+mysql> create database student;
+mysql> create table student(employeeNo int primary key, name char(10) unique);
+mysql> insert int student values(101,'Sam');
+
+mysql> select *from student;
++------------+------+
+| employeeNo | name |
++------------+------+
+|        101 | Sam  |
++------------+------+
 
 mysql> insert int student values(101,'Sam');
 ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'int student values(101,'Sam')' at line 1
@@ -28,7 +42,7 @@ ERROR 1062 (23000): Duplicate entry '101' for key 'student.PRIMARY'
 mysql> insert into student values(102,'Ramesh');
 Query OK, 1 row affected (0.01 sec)
 
-mysql> insert into student name values('sam');
+mysql> insert into student name values('sam'); //Inserting primary key
 
 
 <-------Primary Key---------->
@@ -103,6 +117,51 @@ mysql> select * from employee;
 mysql> insert into employee values (102,'ganesh',102);
 ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`student`.`employee`, CONSTRAINT `employee_ibfk_1` FOREIGN KEY (`sid`) REFERENCES `student` (`sid`))
 
+
+mysql> create table student(employeeNo int primary key, age int default 21);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into student values (101,18);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into student(employeeNo) values (105);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student;
++------------+------+
+| employeeNo | age  |
++------------+------+
+|        101 |   18 |
+|        105 |   21 |
++------------+------+
+2 rows in set (0.00 sec)
+
+mysql> drop table student;
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE student (
+    ->     employeeNo INT PRIMARY KEY,
+    ->     class CHAR(10) CHECK (class IN ('A', 'B'))
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> insert into student values (101,'a');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from student;
++------------+-------+
+| employeeNo | class |
++------------+-------+
+|        101 | a     |
++------------+-------+
+1 row in set (0.00 sec)
+
+mysql> insert into student values (102,'c');
+ERROR 3819 (HY000): Check constraint 'student_chk_1' is violated.
+mysql> drop table student;
+Query OK, 0 rows affected (0.02 sec)
+
+
 //Delete Command
 
 mysql> delete from student where sid=101;
@@ -143,4 +202,5 @@ mysql> select * from student;
 | 111 | radha |
 +-----+-------+
 5 rows in set (0.00 sec)
+
 
